@@ -36,6 +36,7 @@ public class MovementDAO extends AbstractDAO<Movement> {
     }
 
     public double getCurrentBalance(Account a) {
+        //TODO to replace with aggregate and transient balances sum for better performance
         double currentBalance = (Double) criteria().add(Restrictions.eq("changedAccId", a.getId()))
                 .setProjection(Projections.sum("amount")).uniqueResult();
         return currentBalance;

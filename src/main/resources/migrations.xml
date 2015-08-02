@@ -14,6 +14,9 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="initial_balance" type="float">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <createTable tableName="movements">
             <column name="id" type="bigint" autoIncrement="true">

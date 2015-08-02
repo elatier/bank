@@ -19,6 +19,9 @@ public class Account {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "initial_balance", nullable = false)
+    private float initialBalance;
+
     public Account() {
     }
 
@@ -40,6 +43,14 @@ public class Account {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public float getInitialBalance() {
+        return initialBalance;
+    }
+
+    public void setInitialBalance(float initialBalance) {
+        this.initialBalance = initialBalance;
     }
 
     @Override

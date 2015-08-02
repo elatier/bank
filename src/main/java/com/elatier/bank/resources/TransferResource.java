@@ -5,7 +5,7 @@ import com.elatier.bank.core.Account;
 import com.elatier.bank.core.Movement;
 import com.elatier.bank.db.AccountDAO;
 import com.elatier.bank.db.MovementDAO;
-import com.elatier.bank.exceptions.InsufficientFundsException;
+import com.elatier.bank.exceptions.InvalidRequestException;
 import com.google.common.base.Optional;
 import io.dropwizard.hibernate.UnitOfWork;
 
@@ -29,7 +29,7 @@ public class TransferResource {
     private Account findSafely(long accId, String message) {
         final Optional<Account> account = accountDAO.findById(accId);
         if (!account.isPresent()) {
-            throw new NotFoundException(message);
+            throw new InvalidRequestException(400, message);
         }
         return account.get();
     }
@@ -39,11 +39,11 @@ public class TransferResource {
     public Transfer createTransfer(Transfer t) {
         //check account ids are different
         if (t.getDestAccId() == t.getSourceAccId()) {
-            throw new BadRequestException("Source and destination accounts are the same");
+            throw new InvalidRequestException(409, "Source and destination accounts are the same");
         }
         //check if amount is positive
         if (t.getAmount() <= 0) {
-            throw new BadRequestException("Can't transfer non-positive amount");
+            throw new InvalidRequestException(400, "Can't transfer non-positive amount");
         }
 
         //check if both accounts exist
@@ -52,7 +52,7 @@ public class TransferResource {
 
         //check if source balance is positive
         if (movementDAO.getCurrentBalance(sourceAcc) - t.getAmount() < 0) {
-            throw new InsufficientFundsException("Source account does not have enough funds");
+            throw new InvalidRequestException(400, "Source account does not have enough funds");
         }
 
         long transferId = movementDAO.getNextTransferIdFromSeq();

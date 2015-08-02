@@ -1,8 +1,10 @@
 package com.elatier.bank.resources;
 
 import com.elatier.bank.core.Account;
+import com.elatier.bank.core.Movement;
 import com.elatier.bank.db.AccountDAO;
 import com.elatier.bank.db.MovementDAO;
+import com.elatier.bank.exceptions.InvalidRequestException;
 import com.google.common.base.Optional;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
@@ -34,7 +36,7 @@ public class AccountResource {
     private Account findSafely(long accId) {
         final Optional<Account> account = accountDAO.findById(accId);
         if (!account.isPresent()) {
-            throw new NotFoundException("No such account.");
+            throw new InvalidRequestException(404, "No such account.");
         }
         return account.get();
     }
@@ -50,7 +52,17 @@ public class AccountResource {
     @POST
     @UnitOfWork
     public Account createAccount(Account account) {
-        return accountDAO.create(account);
+        accountDAO.create(account);
+
+        //create initial balance movement
+        Movement toMov = new Movement();
+        toMov.setChangedAccId(account.getId());
+        //dummy account
+        toMov.setLinkedAccId(0);
+        toMov.setAmount(account.getInitialBalance());
+        toMov.setTransferId(movementDAO.getNextTransferIdFromSeq());
+        movementDAO.create(toMov);
+        return account;
     }
 
     @GET
