@@ -1,6 +1,7 @@
 package com.elatier.bank.core;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -16,15 +17,19 @@ public class Movement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotNull
     @Column(name = "changed_acc_id", nullable = false)
     private long changedAccId;
 
+    @NotNull
     @Column(name = "linked_acc_id", nullable = false)
     private long linkedAccId;
 
+    @NotNull
     @Column(name = "transfer_id", nullable = false)
     private long transferId;
 
+    @NotNull
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 

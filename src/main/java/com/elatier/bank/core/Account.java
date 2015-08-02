@@ -3,6 +3,7 @@ package com.elatier.bank.core;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -23,6 +24,7 @@ public class Account {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotNull
     @Column(name = "initial_balance", nullable = false)
     private BigDecimal initialBalance;
 

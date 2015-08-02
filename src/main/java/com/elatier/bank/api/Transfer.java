@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.validation.ValidationMethod;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class Transfer {
-    //TODO add validators
     private long id;
+    @NotNull
     private long sourceAccId;
+    @NotNull
     private long destAccId;
+    @NotNull
     private BigDecimal amount;
 
     public Transfer() {

@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -22,7 +23,7 @@ public class MovementDAO extends AbstractDAO<Movement> {
         return Optional.fromNullable(get(id));
     }
 
-    public Movement create(Movement Movement) {
+    public Movement create(@Valid Movement Movement) {
         return persist(Movement);
     }
 
