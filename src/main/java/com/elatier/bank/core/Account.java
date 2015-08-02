@@ -1,6 +1,9 @@
 package com.elatier.bank.core;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -16,11 +19,12 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank
     @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "initial_balance", nullable = false)
-    private float initialBalance;
+    private BigDecimal initialBalance;
 
     public Account() {
     }
@@ -45,11 +49,11 @@ public class Account {
         this.name = name;
     }
 
-    public float getInitialBalance() {
+    public BigDecimal getInitialBalance() {
         return initialBalance;
     }
 
-    public void setInitialBalance(float initialBalance) {
+    public void setInitialBalance(BigDecimal initialBalance) {
         this.initialBalance = initialBalance;
     }
 

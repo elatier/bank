@@ -9,8 +9,10 @@ import com.google.common.base.Optional;
 import io.dropwizard.hibernate.UnitOfWork;
 import io.dropwizard.jersey.params.LongParam;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Path("/account/")
@@ -44,14 +46,14 @@ public class AccountResource {
     @Path("/{accId}/currentBalance")
     @GET
     @UnitOfWork
-    public double getCurrentBalance(@PathParam("accId") LongParam accId) {
+    public BigDecimal getCurrentBalance(@PathParam("accId") LongParam accId) {
         Account a = findSafely(accId.get());
         return movementDAO.getCurrentBalance(a);
     }
 
     @POST
     @UnitOfWork
-    public Account createAccount(Account account) {
+    public Account createAccount(@Valid Account account) {
         accountDAO.create(account);
 
         //create initial balance movement

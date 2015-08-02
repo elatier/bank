@@ -1,6 +1,7 @@
 package com.elatier.bank.core;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "movements")
@@ -25,24 +26,49 @@ public class Movement {
     private long transferId;
 
     @Column(name = "amount", nullable = false)
-    private float amount;
+    private BigDecimal amount;
 
     public Movement() {
     }
 
-    public Movement(long changedAccId, long linkedAccId, long transferId, float amount) {
+    public Movement(long changedAccId, long linkedAccId, long transferId, BigDecimal amount) {
         this.changedAccId = changedAccId;
         this.linkedAccId = linkedAccId;
         this.transferId = transferId;
         this.amount = amount;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movement)) return false;
+
+        Movement movement = (Movement) o;
+
+        if (getId() != movement.getId()) return false;
+        if (getChangedAccId() != movement.getChangedAccId()) return false;
+        if (getLinkedAccId() != movement.getLinkedAccId()) return false;
+        if (getTransferId() != movement.getTransferId()) return false;
+        return getAmount().equals(movement.getAmount());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (int) (getChangedAccId() ^ (getChangedAccId() >>> 32));
+        result = 31 * result + (int) (getLinkedAccId() ^ (getLinkedAccId() >>> 32));
+        result = 31 * result + (int) (getTransferId() ^ (getTransferId() >>> 32));
+        result = 31 * result + getAmount().hashCode();
+        return result;
     }
 
     public long getId() {
@@ -77,29 +103,5 @@ public class Movement {
         this.transferId = transferId;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Movement)) return false;
-
-        Movement movement = (Movement) o;
-
-        if (getId() != movement.getId()) return false;
-        if (getChangedAccId() != movement.getChangedAccId()) return false;
-        if (getLinkedAccId() != movement.getLinkedAccId()) return false;
-        if (getTransferId() != movement.getTransferId()) return false;
-        return Float.compare(movement.getAmount(), getAmount()) == 0;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (getId() ^ (getId() >>> 32));
-        result = 31 * result + (int) (getChangedAccId() ^ (getChangedAccId() >>> 32));
-        result = 31 * result + (int) (getLinkedAccId() ^ (getLinkedAccId() >>> 32));
-        result = 31 * result + (int) (getTransferId() ^ (getTransferId() >>> 32));
-        result = 31 * result + (getAmount() != +0.0f ? Float.floatToIntBits(getAmount()) : 0);
-        return result;
-    }
 }
 

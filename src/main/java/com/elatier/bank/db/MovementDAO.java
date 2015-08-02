@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -35,9 +36,9 @@ public class MovementDAO extends AbstractDAO<Movement> {
         return ((BigInteger) query.uniqueResult()).longValue();
     }
 
-    public double getCurrentBalance(Account a) {
+    public BigDecimal getCurrentBalance(Account a) {
         //TODO to replace with aggregate and transient balances sum for better performance
-        double currentBalance = (Double) criteria().add(Restrictions.eq("changedAccId", a.getId()))
+        BigDecimal currentBalance = (BigDecimal) criteria().add(Restrictions.eq("changedAccId", a.getId()))
                 .setProjection(Projections.sum("amount")).uniqueResult();
         return currentBalance;
     }

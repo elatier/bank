@@ -1,23 +1,35 @@
 package com.elatier.bank.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.dropwizard.validation.ValidationMethod;
+
+import java.math.BigDecimal;
 
 public class Transfer {
     //TODO add validators
     private long id;
     private long sourceAccId;
     private long destAccId;
-    private float amount;
+    private BigDecimal amount;
 
     public Transfer() {
         // Jackson deserialization
     }
 
-    public Transfer(long id, long sourceAccId, long destAccId, float amount) {
+    public Transfer(long id, long sourceAccId, long destAccId, BigDecimal amount) {
         this.id = id;
         this.sourceAccId = sourceAccId;
         this.destAccId = destAccId;
         this.amount = amount;
+    }
+
+    @JsonIgnore
+
+    @ValidationMethod(message = "amount may not be fractional")
+    public boolean isNotFractional() {
+        //TODO FIX THIS
+        return true; //!(amount.);
     }
 
     @JsonProperty
@@ -31,8 +43,12 @@ public class Transfer {
     }
 
     @JsonProperty
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     @JsonProperty

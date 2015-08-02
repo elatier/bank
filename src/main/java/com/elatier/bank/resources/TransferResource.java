@@ -9,8 +9,10 @@ import com.elatier.bank.exceptions.InvalidRequestException;
 import com.google.common.base.Optional;
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Path("/transfer/")
@@ -36,13 +38,13 @@ public class TransferResource {
 
     @POST
     @UnitOfWork
-    public Transfer createTransfer(Transfer t) {
+    public Transfer createTransfer(@Valid Transfer t) {
         //check account ids are different
         if (t.getDestAccId() == t.getSourceAccId()) {
             throw new InvalidRequestException(409, "Source and destination accounts are the same");
         }
         //check if amount is positive
-        if (t.getAmount() <= 0) {
+        if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidRequestException(400, "Can't transfer non-positive amount");
         }
 
@@ -51,16 +53,16 @@ public class TransferResource {
         findSafely(t.getDestAccId(), "No such destAccId.");
 
         //check if source balance is positive
-        if (movementDAO.getCurrentBalance(sourceAcc) - t.getAmount() < 0) {
+        if ((movementDAO.getCurrentBalance(sourceAcc).subtract(t.getAmount())).compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidRequestException(400, "Source account does not have enough funds");
         }
-
+        //TODO check if more precise is more than 2 points decimal
         long transferId = movementDAO.getNextTransferIdFromSeq();
 
         Movement fromMov = new Movement();
         fromMov.setChangedAccId(t.getSourceAccId());
         fromMov.setLinkedAccId(t.getDestAccId());
-        fromMov.setAmount(-1 * t.getAmount());
+        fromMov.setAmount(t.getAmount().negate());
         fromMov.setTransferId(transferId);
         movementDAO.create(fromMov);
 
