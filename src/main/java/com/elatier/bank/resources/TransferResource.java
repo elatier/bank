@@ -10,7 +10,6 @@ import com.google.common.base.Optional;
 import com.wordnik.swagger.annotations.*;
 import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
@@ -48,7 +47,10 @@ public class TransferResource {
             @ApiResponse(code = 409, message = "Source and destination accounts are the same")
     })
     @UnitOfWork
-    public Transfer createTransfer(@ApiParam @Valid Transfer t) {
+    public Transfer createTransfer(@ApiParam Transfer t) {
+        //checking if amount is not null
+        if (t.getAmount() == null) throw new InvalidRequestException(400, "Amount not specifiedFixin");
+
         //check account ids are different
         if (t.getDestAccId() == t.getSourceAccId()) {
             throw new InvalidRequestException(409, "Source and destination accounts are the same");
