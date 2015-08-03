@@ -1,5 +1,7 @@
 package com.elatier.bank.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.dropwizard.validation.ValidationMethod;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -33,6 +35,12 @@ public class Account {
 
     public Account(String name) {
         this.name = name;
+    }
+
+    @JsonIgnore
+    @ValidationMethod(message = "amount scale should be no more than 2")
+    public boolean isAmountCorrectScale() {
+        return !(initialBalance.stripTrailingZeros().scale() > 2);
     }
 
     public long getId() {

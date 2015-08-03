@@ -29,10 +29,9 @@ public class Transfer {
 
     @JsonIgnore
 
-    @ValidationMethod(message = "amount may not be fractional")
-    public boolean isNotFractional() {
-        //TODO FIX THIS
-        return true; //!(amount.);
+    @ValidationMethod(message = "amount scale should be no more than 2")
+    public boolean isAmountCorrectScale() {
+        return !(amount.stripTrailingZeros().scale() > 2);
     }
 
     @JsonProperty
