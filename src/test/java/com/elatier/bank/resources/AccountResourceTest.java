@@ -33,8 +33,8 @@ public class AccountResourceTest {
 
     @Before
     public void setUp() throws Exception {
+        //clear mocks before each test
         reset(mDAO, aDAO);
-
     }
 
     @Test

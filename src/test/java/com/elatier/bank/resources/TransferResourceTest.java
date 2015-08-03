@@ -41,6 +41,7 @@ public class TransferResourceTest {
 
     @Before
     public void setUp() throws Exception {
+        //clear mocks before each  test
         reset(mDAO, aDAO);
 
     }

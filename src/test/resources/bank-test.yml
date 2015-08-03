@@ -1,0 +1,38 @@
+
+# Database settings.
+database:
+
+  # the name of your JDBC driver
+  driverClass: org.h2.Driver
+
+  # the username
+  user: sa
+
+  # the password
+  password: sa
+
+  # the JDBC URL
+  url: jdbc:h2:./target/example-test
+
+  properties:
+    charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.H2Dialect
+
+# use the simple server factory if you only want to run on a single port
+#server:
+#  type: simple
+#  connector:
+#    type: http
+#    port: 8080
+
+swagger:
+  resourcePackage: com.elatier.bank.resources
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8888
+  adminConnectors:
+    - type: http
+      port: 8889
+
