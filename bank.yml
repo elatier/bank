@@ -25,6 +25,9 @@ database:
 #    type: http
 #    port: 8080
 
+swagger:
+  resourcePackage: com.elatier.bank.resources
+
 server:
 #  softNofileLimit: 1000
 #  hardNofileLimit: 1000
@@ -50,3 +53,4 @@ server:
       keyStorePath: example.keystore
       keyStorePassword: example
       validateCerts: false
+

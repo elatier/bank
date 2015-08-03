@@ -16,6 +16,8 @@ import io.dropwizard.hibernate.HibernateBundle;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import io.federecio.dropwizard.swagger.SwaggerBundle;
+import io.federecio.dropwizard.swagger.SwaggerBundleConfiguration;
 
 public class BankApplication extends Application<BankConfiguration> {
     private final HibernateBundle<BankConfiguration> hibernateBundle =
@@ -37,6 +39,12 @@ public class BankApplication extends Application<BankConfiguration> {
 
     @Override
     public void initialize(Bootstrap<BankConfiguration> bootstrap) {
+        bootstrap.addBundle(new SwaggerBundle<BankConfiguration>() {
+            @Override
+            protected SwaggerBundleConfiguration getSwaggerBundleConfiguration(BankConfiguration configuration) {
+                return configuration.getSwaggerBundleConfiguration();
+            }
+        });
         // Enable variable substitution with environment variables
         bootstrap.setConfigurationSourceProvider(
                 new SubstitutingSourceProvider(

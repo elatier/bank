@@ -33,8 +33,15 @@ public class Account {
     public Account() {
     }
 
-    public Account(String name) {
+    public Account(String name, BigDecimal initialBalance) {
         this.name = name;
+        this.initialBalance = initialBalance;
+    }
+
+    public Account(long id, String name, BigDecimal initialBalance) {
+        this.id = id;
+        this.name = name;
+        this.initialBalance = initialBalance;
     }
 
     @JsonIgnore

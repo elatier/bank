@@ -7,6 +7,7 @@ import com.elatier.bank.db.AccountDAO;
 import com.elatier.bank.db.MovementDAO;
 import com.elatier.bank.exceptions.InvalidRequestException;
 import com.google.common.base.Optional;
+import com.wordnik.swagger.annotations.*;
 import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.validation.Valid;
@@ -15,7 +16,9 @@ import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
 import java.util.List;
 
+
 @Path("/transfer/")
+@Api(value = "/transfer/", description = "Operations for transfers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class TransferResource {
@@ -37,15 +40,22 @@ public class TransferResource {
     }
 
     @POST
+    @ApiOperation(value = "Create new transfer", notes = "Create new transfer", response = Transfer.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "May not transfer non-positive amount"),
+            @ApiResponse(code = 400, message = "Source account does not have enough funds for transaction"),
+            @ApiResponse(code = 400, message = "Invalid parameters supplied"),
+            @ApiResponse(code = 409, message = "Source and destination accounts are the same")
+    })
     @UnitOfWork
-    public Transfer createTransfer(@Valid Transfer t) {
+    public Transfer createTransfer(@ApiParam @Valid Transfer t) {
         //check account ids are different
         if (t.getDestAccId() == t.getSourceAccId()) {
             throw new InvalidRequestException(409, "Source and destination accounts are the same");
         }
         //check if amount is positive
         if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRequestException(400, "Can't transfer non-positive amount");
+            throw new InvalidRequestException(400, "May not transfer non-positive amount");
         }
 
         //check if both accounts exist
@@ -54,9 +64,9 @@ public class TransferResource {
 
         //check if source balance is positive
         if ((movementDAO.getCurrentBalance(sourceAcc).subtract(t.getAmount())).compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRequestException(400, "Source account does not have enough funds");
+            throw new InvalidRequestException(400, "Source account does not have enough funds for transaction");
         }
-        //TODO check if more precise is more than 2 points decimal
+
         long transferId = movementDAO.getNextTransferIdFromSeq();
 
         Movement fromMov = new Movement();
@@ -78,6 +88,8 @@ public class TransferResource {
     }
 
     @GET
+    @Path("/list")
+    @ApiOperation(value = "List all movements (for debug)", notes = "List all movements (for debug)", response = Movement.class)
     @UnitOfWork
     public List<Movement> listMovements() {
         return movementDAO.findAll();
