@@ -27,6 +27,29 @@ public class Transfer {
         this.amount = amount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Transfer)) return false;
+
+        Transfer transfer = (Transfer) o;
+
+        if (getId() != transfer.getId()) return false;
+        if (getSourceAccId() != transfer.getSourceAccId()) return false;
+        if (getDestAccId() != transfer.getDestAccId()) return false;
+        return getAmount().equals(transfer.getAmount());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (int) (getSourceAccId() ^ (getSourceAccId() >>> 32));
+        result = 31 * result + (int) (getDestAccId() ^ (getDestAccId() >>> 32));
+        result = 31 * result + getAmount().hashCode();
+        return result;
+    }
+
     @JsonIgnore
 
     @ValidationMethod(message = "amount scale should be no more than 2")
